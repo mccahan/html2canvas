@@ -282,7 +282,6 @@ export class DocumentCloner {
                 (typeof this.options.ignoreElements !== 'function' || !this.options.ignoreElements(child)))
         ) {
             if (!this.options.copyStyles || !isElementNode(child) || !isStyleElement(child)) {
-
                 if (isInShadow && clone.shadowRoot) {
                     clone.shadowRoot.appendChild(this.cloneNode(child, copyStyles));
                     return;
@@ -305,7 +304,9 @@ export class DocumentCloner {
             if (isElementNode(child) && isSlotElement(child) && typeof child.assignedNodes === 'function') {
                 const assignedNodes = child.assignedNodes() as ChildNode[];
                 if (assignedNodes.length) {
-                    assignedNodes.forEach((assignedNode) => this.appendChildNode(clone, assignedNode, copyStyles, false));
+                    assignedNodes.forEach((assignedNode) =>
+                        this.appendChildNode(clone, assignedNode, copyStyles, false)
+                    );
                 }
             } else {
                 this.appendChildNode(clone, child, copyStyles, false);
