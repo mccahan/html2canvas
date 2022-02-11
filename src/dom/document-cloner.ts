@@ -175,7 +175,8 @@ export class DocumentCloner {
     createCustomElementClone(node: HTMLElement): HTMLElement {
         const clone = document.createElement('html2canvas-custom-element');
         copyCSSStyles(node.style, clone);
-        clone.attachShadow({mode: 'open'});
+
+        if (typeof clone.attachShadow !== 'undefined') clone.attachShadow({mode: 'open'});
 
         return clone;
     }
