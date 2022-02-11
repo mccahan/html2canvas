@@ -283,6 +283,9 @@ export class DocumentCloner {
                 (typeof this.options.ignoreElements !== 'function' || !this.options.ignoreElements(child)))
         ) {
             if (!this.options.copyStyles || !isElementNode(child) || !isStyleElement(child)) {
+                /* If an element was inside a custom element shadowRoot, clone it
+                 * into a shadowRoot, primarily to prevent leaking of styles into
+                 * the top-level DOM */
                 if (isInShadow && clone.shadowRoot) {
                     clone.shadowRoot.appendChild(this.cloneNode(child, copyStyles));
                     return;
