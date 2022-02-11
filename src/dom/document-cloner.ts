@@ -173,9 +173,8 @@ export class DocumentCloner {
     }
 
     createCustomElementClone(node: HTMLElement): HTMLElement {
-        const clone = document.createElement('html2canvas-custom-element');
+        const clone = document.createElement('html2canvascustomelement');
         copyCSSStyles(node.style, clone);
-        clone.attachShadow({mode: 'open'});
 
         return clone;
     }
@@ -274,7 +273,7 @@ export class DocumentCloner {
         return blankCanvas;
     }
 
-    appendChildNode(clone: HTMLElement | SVGElement, child: Node, copyStyles: boolean, isInShadow: boolean): void {
+    appendChildNode(clone: HTMLElement | SVGElement, child: Node, copyStyles: boolean): void {
         if (
             !isElementNode(child) ||
             (!isScriptElement(child) &&
@@ -282,11 +281,6 @@ export class DocumentCloner {
                 (typeof this.options.ignoreElements !== 'function' || !this.options.ignoreElements(child)))
         ) {
             if (!this.options.copyStyles || !isElementNode(child) || !isStyleElement(child)) {
-
-                if (isInShadow && clone.shadowRoot) {
-                    clone.shadowRoot.appendChild(this.cloneNode(child, copyStyles));
-                    return;
-                }
                 clone.appendChild(this.cloneNode(child, copyStyles));
             }
         }
@@ -298,17 +292,13 @@ export class DocumentCloner {
             child;
             child = child.nextSibling
         ) {
-            if (node.shadowRoot) {
-                this.appendChildNode(clone, child, copyStyles, true);
-                continue;
-            }
             if (isElementNode(child) && isSlotElement(child) && typeof child.assignedNodes === 'function') {
                 const assignedNodes = child.assignedNodes() as ChildNode[];
                 if (assignedNodes.length) {
-                    assignedNodes.forEach((assignedNode) => this.appendChildNode(clone, assignedNode, copyStyles, false));
+                    assignedNodes.forEach((assignedNode) => this.appendChildNode(clone, assignedNode, copyStyles));
                 }
             } else {
-                this.appendChildNode(clone, child, copyStyles, false);
+                this.appendChildNode(clone, child, copyStyles);
             }
         }
     }
